@@ -1,0 +1,173 @@
+{
+  "plan_id": "4f6ab03f7218",
+  "table": "main.sales.orders",
+  "view": "main.sales.orders_v",
+  "from_version": 1,
+  "to_version": 2,
+  "verdict": "PROCEED",
+  "steps": [
+    {
+      "id": "enable_type_widening",
+      "phase": "preflight",
+      "description": "enable Delta type widening",
+      "sql": "ALTER TABLE main.sales.orders SET TBLPROPERTIES ('delta.enableTypeWidening' = 'true')",
+      "rollback_sql": null,
+      "deferred": false
+    },
+    {
+      "id": "add_columns",
+      "phase": "expand",
+      "description": "add 3 nullable column(s)",
+      "sql": "ALTER TABLE main.sales.orders ADD COLUMNS (`promo_code` STRING COMMENT 'schema_evolver 4f6ab03f7218', `customer_id` STRING COMMENT 'schema_evolver 4f6ab03f7218', `_rescued_data` STRING COMMENT 'schema_evolver 4f6ab03f7218')",
+      "rollback_sql": "RESTORE TABLE main.sales.orders TO VERSION AS OF {pre_version}",
+      "deferred": false
+    },
+    {
+      "id": "widen_amount",
+      "phase": "expand",
+      "description": "widen amount float to double",
+      "sql": "ALTER TABLE main.sales.orders ALTER COLUMN `amount` TYPE DOUBLE",
+      "rollback_sql": "RESTORE TABLE main.sales.orders TO VERSION AS OF {pre_version}",
+      "deferred": false
+    },
+    {
+      "id": "widen_loyalty_points",
+      "phase": "expand",
+      "description": "widen loyalty_points int to long",
+      "sql": "ALTER TABLE main.sales.orders ALTER COLUMN `loyalty_points` TYPE BIGINT",
+      "rollback_sql": "RESTORE TABLE main.sales.orders TO VERSION AS OF {pre_version}",
+      "deferred": false
+    },
+    {
+      "id": "backfill_customer_id",
+      "phase": "backfill",
+      "description": "copy history cust_id into customer_id",
+      "sql": "UPDATE main.sales.orders SET `customer_id` = CAST(`cust_id` AS STRING) WHERE `customer_id` IS NULL AND `cust_id` IS NOT NULL",
+      "rollback_sql": null,
+      "deferred": false
+    },
+    {
+      "id": "switch_view",
+      "phase": "switch",
+      "description": "repoint contract view (old names kept as aliases)",
+      "sql": "CREATE OR REPLACE VIEW main.sales.orders_v AS SELECT `order_id`, COALESCE(`customer_id`, CAST(`cust_id` AS STRING)) AS `customer_id`, COALESCE(`customer_id`, CAST(`cust_id` AS STRING)) AS `cust_id`, `order_ts`, `qty`, `amount`, `status`, `region`, `loyalty_points`, `promo_code` FROM main.sales.orders",
+      "rollback_sql": "CREATE OR REPLACE VIEW main.sales.orders_v AS SELECT `order_id`, `cust_id`, `order_ts`, `qty`, `amount`, `status`, `region`, `loyalty_points` FROM main.sales.orders",
+      "deferred": false
+    },
+    {
+      "id": "enable_column_mapping",
+      "phase": "contract",
+      "description": "column mapping is required for DROP COLUMNS; may affect streaming reads and CDF",
+      "sql": "ALTER TABLE main.sales.orders SET TBLPROPERTIES ('delta.columnMapping.mode' = 'name')",
+      "rollback_sql": null,
+      "deferred": true
+    },
+    {
+      "id": "relax_not_null_cust_id",
+      "phase": "contract",
+      "description": "drop NOT NULL on cust_id before writers stop dual writing",
+      "sql": "ALTER TABLE main.sales.orders ALTER COLUMN `cust_id` DROP NOT NULL",
+      "rollback_sql": null,
+      "deferred": true
+    },
+    {
+      "id": "drop_old_columns",
+      "phase": "contract",
+      "description": "drop renamed source columns",
+      "sql": "ALTER TABLE main.sales.orders DROP COLUMNS (`cust_id`)",
+      "rollback_sql": null,
+      "deferred": true
+    },
+    {
+      "id": "drop_view_aliases",
+      "phase": "contract",
+      "description": "remove old-name aliases from view",
+      "sql": "CREATE OR REPLACE VIEW main.sales.orders_v AS SELECT `order_id`, `customer_id`, `order_ts`, `qty`, `amount`, `status`, `region`, `loyalty_points`, `promo_code` FROM main.sales.orders",
+      "rollback_sql": null,
+      "deferred": true
+    }
+  ],
+  "writer_mapping": {
+    "dual_write": {
+      "customer_id": "cust_id"
+    },
+    "rescue": [
+      "customer_email"
+    ]
+  },
+  "next_contract": {
+    "table": "main.sales.orders",
+    "version": 2,
+    "columns": [
+      {
+        "name": "order_id",
+        "type": "string",
+        "nullable": false,
+        "pii": false
+      },
+      {
+        "name": "customer_id",
+        "type": "string",
+        "nullable": false,
+        "pii": false
+      },
+      {
+        "name": "order_ts",
+        "type": "timestamp",
+        "nullable": false,
+        "pii": false
+      },
+      {
+        "name": "qty",
+        "type": "int",
+        "nullable": true,
+        "pii": false
+      },
+      {
+        "name": "amount",
+        "type": "double",
+        "nullable": true,
+        "pii": false
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "nullable": true,
+        "pii": false
+      },
+      {
+        "name": "region",
+        "type": "string",
+        "nullable": true,
+        "pii": false
+      },
+      {
+        "name": "loyalty_points",
+        "type": "long",
+        "nullable": true,
+        "pii": false
+      },
+      {
+        "name": "promo_code",
+        "type": "string",
+        "nullable": true,
+        "pii": false
+      }
+    ],
+    "aliases": {
+      "cust_id": "customer_id"
+    }
+  },
+  "view_columns": [
+    "order_id",
+    "customer_id",
+    "cust_id",
+    "order_ts",
+    "qty",
+    "amount",
+    "status",
+    "region",
+    "loyalty_points",
+    "promo_code"
+  ]
+}

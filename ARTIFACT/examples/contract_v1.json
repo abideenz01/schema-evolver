@@ -1,0 +1,41 @@
+{
+  "table": "main.sales.orders",
+  "version": 1,
+  "columns": [
+    {
+      "name": "order_id",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "cust_id",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "order_ts",
+      "type": "timestamp",
+      "nullable": false
+    },
+    {
+      "name": "qty",
+      "type": "int"
+    },
+    {
+      "name": "amount",
+      "type": "float"
+    },
+    {
+      "name": "status",
+      "type": "string"
+    },
+    {
+      "name": "region",
+      "type": "string"
+    },
+    {
+      "name": "loyalty_points",
+      "type": "int"
+    }
+  ]
+}

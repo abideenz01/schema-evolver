@@ -1,0 +1,63 @@
+{
+  "table": "main.sales.orders",
+  "version": 2,
+  "columns": [
+    {
+      "name": "order_id",
+      "type": "string",
+      "nullable": false,
+      "pii": false
+    },
+    {
+      "name": "customer_id",
+      "type": "string",
+      "nullable": false,
+      "pii": false
+    },
+    {
+      "name": "order_ts",
+      "type": "timestamp",
+      "nullable": false,
+      "pii": false
+    },
+    {
+      "name": "qty",
+      "type": "int",
+      "nullable": true,
+      "pii": false
+    },
+    {
+      "name": "amount",
+      "type": "double",
+      "nullable": true,
+      "pii": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "nullable": true,
+      "pii": false
+    },
+    {
+      "name": "region",
+      "type": "string",
+      "nullable": true,
+      "pii": false
+    },
+    {
+      "name": "loyalty_points",
+      "type": "long",
+      "nullable": true,
+      "pii": false
+    },
+    {
+      "name": "promo_code",
+      "type": "string",
+      "nullable": true,
+      "pii": false
+    }
+  ],
+  "aliases": {
+    "cust_id": "customer_id"
+  }
+}

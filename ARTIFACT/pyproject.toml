@@ -1,0 +1,12 @@
+[project]
+name = "schema-evolver"
+version = "0.1.0"
+description = "Evidence-gated schema evolution and expand/contract migration planning for Delta Lake"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

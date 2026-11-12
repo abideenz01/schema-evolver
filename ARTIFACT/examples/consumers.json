@@ -1,0 +1,18 @@
+{
+  "finance_dashboard": [
+    "order_id",
+    "cust_id",
+    "amount",
+    "order_ts"
+  ],
+  "churn_features": [
+    "cust_id",
+    "qty",
+    "loyalty_points"
+  ],
+  "ops_report": [
+    "order_id",
+    "status",
+    "region"
+  ]
+}

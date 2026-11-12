@@ -1,0 +1,195 @@
+{
+  "plan_id": "4f6ab03f7218",
+  "verdict": "PROCEED",
+  "counts": {
+    "AUTO_APPLY": 3,
+    "EXPAND_CONTRACT": 1,
+    "FILL_NULL": 1,
+    "RESCUE": 1
+  },
+  "decisions": [
+    {
+      "action": "EXPAND_CONTRACT",
+      "column": "cust_id",
+      "reason": "rename verified by data evidence",
+      "change_kind": "RENAME",
+      "new_column": "customer_id",
+      "old_type": "string",
+      "new_type": "string",
+      "evidence": {
+        "verified": true,
+        "type_compatible": true,
+        "value_containment": 0.802,
+        "numeric_range_overlap": null,
+        "shape_match": 1.0,
+        "null_rate_delta": 0.0,
+        "proposed_by": {
+          "heuristic": 1.0,
+          "llm": 0.93
+        }
+      }
+    },
+    {
+      "action": "RESCUE",
+      "column": "customer_email",
+      "reason": "name matches a PII pattern, needs classification before landing",
+      "change_kind": "NEW_COLUMN",
+      "new_column": null,
+      "old_type": null,
+      "new_type": "string",
+      "evidence": {}
+    },
+    {
+      "action": "AUTO_APPLY",
+      "column": "promo_code",
+      "reason": "additive nullable column",
+      "change_kind": "NEW_COLUMN",
+      "new_column": null,
+      "old_type": null,
+      "new_type": "string",
+      "evidence": {}
+    },
+    {
+      "action": "FILL_NULL",
+      "column": "region",
+      "reason": "nullable column not sent, keep it and land nulls",
+      "change_kind": "MISSING_COLUMN",
+      "new_column": null,
+      "old_type": "string",
+      "new_type": null,
+      "evidence": {}
+    },
+    {
+      "action": "AUTO_APPLY",
+      "column": "amount",
+      "reason": "supported float widening on delta_4_0",
+      "change_kind": "TYPE_WIDEN",
+      "new_column": null,
+      "old_type": "float",
+      "new_type": "double",
+      "evidence": {}
+    },
+    {
+      "action": "AUTO_APPLY",
+      "column": "loyalty_points",
+      "reason": "supported integral widening on delta_4_0",
+      "change_kind": "TYPE_WIDEN",
+      "new_column": null,
+      "old_type": "int",
+      "new_type": "long",
+      "evidence": {}
+    }
+  ],
+  "rejected_proposals": [
+    {
+      "old": "cust_id",
+      "new": "customer_email",
+      "source": "heuristic",
+      "reason": "value distribution does not match",
+      "evidence": {
+        "verified": false,
+        "type_compatible": true,
+        "value_containment": 0.0,
+        "numeric_range_overlap": null,
+        "shape_match": 0.0,
+        "null_rate_delta": 0.0,
+        "failed": "value distribution does not match",
+        "proposed_by": {
+          "heuristic": 0.8
+        }
+      }
+    },
+    {
+      "old": "region",
+      "new": "promo_code",
+      "source": "llm",
+      "reason": "value distribution does not match",
+      "evidence": {
+        "verified": false,
+        "type_compatible": true,
+        "value_containment": 0.0,
+        "numeric_range_overlap": null,
+        "shape_match": 0.321,
+        "null_rate_delta": 0.22,
+        "failed": "value distribution does not match",
+        "proposed_by": {
+          "llm": 0.81
+        }
+      }
+    }
+  ],
+  "changes": [
+    {
+      "kind": "NEW_COLUMN",
+      "column": "customer_email",
+      "old_type": null,
+      "new_type": "string",
+      "detail": ""
+    },
+    {
+      "kind": "NEW_COLUMN",
+      "column": "customer_id",
+      "old_type": null,
+      "new_type": "string",
+      "detail": ""
+    },
+    {
+      "kind": "NEW_COLUMN",
+      "column": "promo_code",
+      "old_type": null,
+      "new_type": "string",
+      "detail": ""
+    },
+    {
+      "kind": "MISSING_COLUMN",
+      "column": "cust_id",
+      "old_type": "string",
+      "new_type": null,
+      "detail": "absent"
+    },
+    {
+      "kind": "MISSING_COLUMN",
+      "column": "region",
+      "old_type": "string",
+      "new_type": null,
+      "detail": "absent"
+    },
+    {
+      "kind": "TYPE_WIDEN",
+      "column": "amount",
+      "old_type": "float",
+      "new_type": "double",
+      "detail": "float"
+    },
+    {
+      "kind": "TYPE_WIDEN",
+      "column": "loyalty_points",
+      "old_type": "int",
+      "new_type": "long",
+      "detail": "integral"
+    }
+  ],
+  "llm": {
+    "schema_rejected": [
+      {
+        "item": {
+          "old": "order_total",
+          "new": "amount",
+          "confidence": 0.7,
+          "rationale": "synonym"
+        },
+        "reason": "old column is not a missing column"
+      }
+    ],
+    "errors": []
+  },
+  "reader_breakage": {},
+  "contract_phase_blocked_by": {
+    "finance_dashboard": [
+      "cust_id"
+    ],
+    "churn_features": [
+      "cust_id"
+    ]
+  }
+}

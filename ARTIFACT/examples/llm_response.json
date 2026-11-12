@@ -1,0 +1,22 @@
+{
+  "renames": [
+    {
+      "old": "cust_id",
+      "new": "customer_id",
+      "confidence": 0.93,
+      "rationale": "abbreviation expanded, same type"
+    },
+    {
+      "old": "region",
+      "new": "promo_code",
+      "confidence": 0.81,
+      "rationale": "region replaced by campaign targeting code"
+    },
+    {
+      "old": "order_total",
+      "new": "amount",
+      "confidence": 0.7,
+      "rationale": "synonym"
+    }
+  ]
+}
