@@ -16,6 +16,3 @@ The companion artifact is schema_evolver, a small Python tool with no runtime de
 
 I also ran an honest check on 16 synthetic labeled cases with scripted model confidences. Accepting on confidence alone let 6 wrong renames through. The evidence gate let 2 through, billing_country vs shipping_country and discount vs tax, columns that share a value domain. Data cannot tell those apart either, which is exactly why accepted renames go through a reversible path instead of a direct ALTER.
 
-Where do you draw the line on autonomy in your pipelines, renames included or additive changes only?
-
-#DataEngineering #DeltaLake #Databricks #LLMOps #SchemaEvolution
